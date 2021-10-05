@@ -14,11 +14,12 @@ const layersDir = path.join(basePath, "/layers");
 console.log(path.join(basePath, "/src/config.js"));
 const {
   format,
-  baseUri,
+  // baseUri,
   description,
   background,
-  uniqueDnaTorrance,
+  uniqueDnaTolerance,
   layerConfigurations,
+  layerSubsetAttributes,
   rarityDelimiter,
   shuffleLayerConfigurations,
   debugLogs,
@@ -107,16 +108,25 @@ const drawBackground = () => {
 };
 
 const addMetadata = (_dna, _edition) => {
+  console.log({ layerSubsetAttributes });
+  const albumNames = layerSubsetAttributes.map(({ key, values }) => ({
+    trait_type: key,
+    values: values[_edition],
+  }));
+  attributesList.unshift(...albumNames);
+
   let dateTime = Date.now();
   let tempMetadata = {
     dna: sha1(_dna.join("")),
-    name: `#${_edition}`,
+    //TODO: name is here
+    name: `Lofasz $${_edition}`,
     description: description,
-    image: `${baseUri}/${_edition}.png`,
+    // image: `${baseUri}/${_edition}.png`,
+    image: `image.png`,
     edition: _edition,
     date: dateTime,
     ...extraMetadata,
-    attributes: attributesList,
+    attributes: { ...attributesList },
     compiler: "HashLips Art Engine",
   };
   metadataList.push(tempMetadata);
@@ -224,8 +234,8 @@ const startCreating = async () => {
   let failedCount = 0;
   let abstractedIndexes = [];
   for (
-    let i = 1;
-    i <= layerConfigurations[layerConfigurations.length - 1].growEditionSizeTo;
+    let i = 0;
+    i < layerConfigurations[layerConfigurations.length - 1].growEditionSizeTo;
     i++
   ) {
     abstractedIndexes.push(i);
@@ -279,7 +289,7 @@ const startCreating = async () => {
       } else {
         console.log("DNA exists!");
         failedCount++;
-        if (failedCount >= uniqueDnaTorrance) {
+        if (failedCount >= uniqueDnaTolerance) {
           console.log(
             `You need more layers or elements to grow your edition to ${layerConfigurations[layerConfigIndex].growEditionSizeTo} artworks!`
           );

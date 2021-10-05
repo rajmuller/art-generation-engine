@@ -13,6 +13,8 @@
   },
   "scripts": {
     "build": "node index.js",
+    "rarity": "node utils/rarityData.js",
+    "updateUri": "node utils/createPreviewCollage.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Daniel Eugene Botha (HashLips)",
