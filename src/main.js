@@ -50,12 +50,11 @@ const getWeightNumber = (_str) => {
 
 const cleanDna = (_str) => {
   var dna = Number(_str.split(":").shift());
-  console.log({ dna });
   return dna;
 };
 
 const cleanName = (_str) => {
-  let nameWithoutExtension = _str.slice(0, -4);
+  let nameWithoutExtension = _str.replace(".png", "");
   var nameWithoutWeight = nameWithoutExtension.split(rarityDelimiter).shift();
   return nameWithoutWeight;
 };
@@ -76,14 +75,16 @@ const getElements = (path) => {
 };
 
 const layersSetup = (layersOrder) => {
-  const layers = layersOrder.map((layerObj, index) => ({
-    id: index,
-    name: layerObj.name,
-    elements: getElements(`${layersDir}/${layerObj.name}/`),
-    blendMode:
-      layerObj["blend"] != undefined ? layerObj["blend"] : "source-over",
-    opacity: layerObj["opacity"] != undefined ? layerObj["opacity"] : 1,
-  }));
+  const layers = layersOrder.map((layerObj, index) => {
+    return {
+      id: index,
+      name: layerObj.name,
+      elements: getElements(`${layersDir}/${layerObj.name}/`),
+      blendMode:
+        layerObj["blend"] != undefined ? layerObj["blend"] : "source-over",
+      opacity: layerObj["opacity"] != undefined ? layerObj["opacity"] : 1,
+    };
+  });
   return layers;
 };
 
@@ -135,12 +136,9 @@ const drawElement = (_renderObject) => {
   addAttributes(_renderObject);
 };
 
-const constructLayerFromDna = (_dna = [], _layersFolders = []) => {
-  console.log({ _dna });
-  console.log({ _layersFolders });
+const constructLayerToDna = (_dna = [], _layersFolders = []) => {
   let mappedDnaToLayers = _layersFolders.map((layer, index) => {
     let selectedElement = layer.elements.find((e) => {
-      console.log("_dna[index]: ", _dna[index]);
       return e.id == cleanDna(_dna[index]);
     });
     return {
@@ -150,7 +148,6 @@ const constructLayerFromDna = (_dna = [], _layersFolders = []) => {
       selectedElement: selectedElement,
     };
   });
-  console.log({ selectedElement });
   return mappedDnaToLayers;
 };
 
@@ -180,9 +177,8 @@ const createDna = (_layersFolders) => {
       }
     }
   });
-  randNum.push(...colors);
   // console.log({ randNum });
-  // { randNum: [ 'black#500', 'red#500', '1:v2#900', '0:a#100' ] }
+  // { randNum: [ '12:Red-Black-Blue#10', '1:v2#900', '1:b#450' ] }
   return randNum;
 };
 
@@ -240,15 +236,16 @@ const startCreating = async () => {
     ) {
       let newDna = createDna(layersFolders);
       if (isDnaUnique(dnaList, newDna)) {
-        // TODO: asd
-        let results = constructLayerFromDna(newDna, layersFolders);
+        let results = constructLayerToDna(newDna, layersFolders);
         let loadedElements = [];
-
         results.forEach((layer) => {
-          loadedElements.push(loadLayerImg(layer));
+          if (!layer.name === "Colors") {
+            loadedElements.push(loadLayerImg(layer));
+          }
         });
 
         await Promise.all(loadedElements).then((renderObjectArray) => {
+          console.log({ loadedElements });
           ctx.clearRect(0, 0, format.width, format.height);
           renderObjectArray.forEach((renderObject) => {
             drawElement(renderObject);

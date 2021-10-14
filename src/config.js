@@ -10,8 +10,9 @@ const description = "Price test of 100 with colors";
 const colors = ["black#500", "red#500"];
 const layerConfigurations = [
   {
-    growEditionSizeTo: 100,
+    growEditionSizeTo: 10,
     layersOrder: [
+      { name: "Colors" },
       { name: "Background" },
       { name: "Foreground" },
       // { name: "Eye color" },
