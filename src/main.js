@@ -38,10 +38,9 @@ const buildSetup = () => {
 };
 
 const getRarityWeight = (_str) => {
-  let nameWithoutExtension = _str.slice(0, -4);
-  var nameWithoutWeight = Number(
-    nameWithoutExtension.split(rarityDelimiter).pop()
-  );
+  // _str = folder name
+  var nameWithoutWeight = Number(_str.split(rarityDelimiter).pop());
+  console.log({ nameWithoutWeight });
   if (isNaN(nameWithoutWeight)) {
     nameWithoutWeight = 0;
   }

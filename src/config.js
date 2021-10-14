@@ -5,42 +5,13 @@ const isLocal = typeof process.pkg === "undefined";
 const basePath = isLocal ? process.cwd() : path.dirname(process.execPath);
 const { MODE } = require(path.join(basePath, "src/blendMode.js"));
 
-function getColors(colorArray) {
-  const finalColors = [];
-  howManyColors.map((object)=>{
-    const rand = Math.random();
-    
-    
-    object.
-  })
-  const quantity = 
-  colorArray.map((object)=>{
-    const rand = Math.random();
-    
-    
-    object.
-  })
-}
-
 const description = "Price test of 100 with colors";
-
-const allColors = [
-  { name: "black", chance: 334 },
-  { name: "red", chance: 333 },
-  { name: "blue", chance: 333 },
-];
-
-const howManyColors = [
-  {quantity: 1, chance: 10},
-  {quantity: 2, chance: 330},
-  {quantity: 3, chance: 660},
-];
 
 const layerConfigurations = [
   {
     growEditionSizeTo: 100,
     layersOrder: [
-      { name: "Background", colors },
+      { name: "Background" },
       // { name: "Eyeball" },
       // { name: "Eye color" },
       // { name: "Iris" },
