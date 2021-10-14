@@ -26,6 +26,7 @@ const {
 const canvas = createCanvas(format.width, format.height);
 const ctx = canvas.getContext("2d");
 var metadataList = [];
+var selectedColor = "";
 var attributesList = [];
 var dnaList = [];
 
@@ -107,14 +108,22 @@ const addMetadata = (_dna, _edition) => {
     edition: _edition,
     date: dateTime,
     ...extraMetadata,
-    attributes: attributesList,
+    attributes: [
+      {
+        trait_type: "Color",
+        value: selectedColor,
+      },
+      ...attributesList,
+    ],
   };
   // single metadata file
   metadataList.push(tempMetadata);
+  selectedColor = "";
   attributesList = [];
 };
 
 const addAttributes = (_element) => {
+  console.log({ _element });
   let selectedElement = _element.layer.selectedElement;
   attributesList.push({
     trait_type: _element.layer.name,
@@ -124,7 +133,9 @@ const addAttributes = (_element) => {
 
 const loadLayerImg = async (_layer) => {
   return new Promise(async (resolve) => {
-    const image = await loadImage(`${_layer.selectedElement.path}`);
+    const image = await loadImage(
+      `${_layer.selectedElement.path}/${selectedColor}.png`
+    );
     resolve({ layer: _layer, loadedImage: image });
   });
 };
@@ -237,20 +248,21 @@ const startCreating = async () => {
       let newDna = createDna(layersFolders);
       if (isDnaUnique(dnaList, newDna)) {
         let results = constructLayerToDna(newDna, layersFolders);
+        selectedColor = results[0].selectedElement.name;
         let loadedElements = [];
         results.forEach((layer) => {
-          if (!layer.name === "Colors") {
+          if (layer.name !== "Colors") {
             loadedElements.push(loadLayerImg(layer));
           }
         });
 
         await Promise.all(loadedElements).then((renderObjectArray) => {
-          console.log({ loadedElements });
           ctx.clearRect(0, 0, format.width, format.height);
           renderObjectArray.forEach((renderObject) => {
             drawElement(renderObject);
           });
           saveImage(abstractedIndexes[0]);
+          console.log({ newDna });
           addMetadata(newDna, abstractedIndexes[0]);
           saveMetaDataSingleFile(abstractedIndexes[0]);
           console.log(
