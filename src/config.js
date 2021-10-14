@@ -5,62 +5,83 @@ const isLocal = typeof process.pkg === "undefined";
 const basePath = isLocal ? process.cwd() : path.dirname(process.execPath);
 const { MODE } = require(path.join(basePath, "src/blendMode.js"));
 
-const description = "Price test of 600";
+function getColors(colorArray) {
+  const finalColors = [];
+  howManyColors.map((object)=>{
+    const rand = Math.random();
+    
+    
+    object.
+  })
+  const quantity = 
+  colorArray.map((object)=>{
+    const rand = Math.random();
+    
+    
+    object.
+  })
+}
 
-// Rarity is weighted, make a folder summ 1000 then it is percentage based 10 = 1%
+const description = "Price test of 100 with colors";
+
+const allColors = [
+  { name: "black", chance: 334 },
+  { name: "red", chance: 333 },
+  { name: "blue", chance: 333 },
+];
+
+const howManyColors = [
+  {quantity: 1, chance: 10},
+  {quantity: 2, chance: 330},
+  {quantity: 3, chance: 660},
+];
+
 const layerConfigurations = [
   {
-    growEditionSizeTo: 700,
+    growEditionSizeTo: 100,
     layersOrder: [
-      { name: "Background" },
-      { name: "Eyeball" },
-      { name: "Eye color" },
-      { name: "Iris" },
-      { name: "Shine" },
-      { name: "Bottom lid" },
-      { name: "Top lid" },
-    ],
-  },
-  {
-    growEditionSizeTo: 850,
-    race: "Zombie",
-    layersOrder: [
-      { name: "Background" },
-      { name: "Eyeball" },
-      { name: "Eye color" },
-      { name: "Iris" },
-      { name: "Shine" },
-      { name: "Top lid" },
-    ],
-  },
-  {
-    growEditionSizeTo: 1000,
-    race: "Zombie",
-    layersOrder: [
-      { name: "Background" },
-      { name: "Eyeball" },
+      { name: "Background", colors },
+      // { name: "Eyeball" },
       // { name: "Eye color" },
-      { name: "Iris" },
-      { name: "Shine" },
-      { name: "Bottom lid" },
-      { name: "Top lid" },
+      // { name: "Iris" },
+      // { name: "Shine" },
+      // { name: "Bottom lid" },
+      // { name: "Top lid" },
     ],
   },
+  // {
+  //   growEditionSizeTo: 850,
+  //   race: "Zombie",
+  //   layersOrder: [
+  //     { name: "Background" },
+  //     { name: "Eyeball" },
+  //     { name: "Eye color" },
+  //     { name: "Iris" },
+  //     { name: "Shine" },
+  //     { name: "Top lid" },
+  //   ],
+  // },
+  // {
+  //   growEditionSizeTo: 1000,
+  //   race: "Zombie",
+  //   layersOrder: [
+  //     { name: "Background" },
+  //     { name: "Eyeball" },
+  //     // { name: "Eye color" },
+  //     { name: "Iris" },
+  //     { name: "Shine" },
+  //     { name: "Bottom lid" },
+  //     { name: "Top lid" },
+  //   ],
+  // },
 ];
 
 // If multiple edition then true else it is in order ie: parrots then hawks
 const shuffleLayerConfigurations = false;
 
-const debugLogs = false;
-
 const format = {
   width: 512,
   height: 512,
-};
-
-const background = {
-  generate: false,
-  brightness: "80%",
 };
 
 const extraMetadata = {
@@ -102,13 +123,11 @@ module.exports = {
   format,
   // baseUri,
   description,
-  background,
   uniqueDnaTolerance,
   layerConfigurations,
   // layerSubsetAttributes,
   rarityDelimiter,
   preview,
   shuffleLayerConfigurations,
-  debugLogs,
   extraMetadata,
 };

@@ -16,12 +16,10 @@ const {
   format,
   // baseUri,
   description,
-  background,
   uniqueDnaTolerance,
   layerConfigurations,
   rarityDelimiter,
   shuffleLayerConfigurations,
-  debugLogs,
   extraMetadata,
 } = require(path.join(basePath, "/src/config.js"));
 const canvas = createCanvas(format.width, format.height);
@@ -95,19 +93,7 @@ const saveImage = (_editionCount) => {
   );
 };
 
-const genColor = () => {
-  let hue = Math.floor(Math.random() * 360);
-  let pastel = `hsl(${hue}, 100%, ${background.brightness})`;
-  return pastel;
-};
-
-const drawBackground = () => {
-  ctx.fillStyle = genColor();
-  ctx.fillRect(0, 0, format.width, format.height);
-};
-
 const addMetadata = (_dna, _edition) => {
-
   let dateTime = Date.now();
   let tempMetadata = {
     dna: sha1(_dna.join("")),
@@ -121,6 +107,7 @@ const addMetadata = (_dna, _edition) => {
     ...extraMetadata,
     attributes: attributesList,
   };
+  // single metadata file
   metadataList.push(tempMetadata);
   attributesList = [];
 };
@@ -195,11 +182,6 @@ const writeMetaData = (_data) => {
 
 const saveMetaDataSingleFile = (_editionCount) => {
   let metadata = metadataList.find((meta) => meta.edition == _editionCount);
-  debugLogs
-    ? console.log(
-        `Writing metadata for ${_editionCount}: ${JSON.stringify(metadata)}`
-      )
-    : null;
   fs.writeFileSync(
     `${buildDir}/json/${_editionCount}.json`,
     JSON.stringify(metadata, null, 2)
@@ -221,7 +203,7 @@ function shuffle(array) {
 }
 
 const startCreating = async () => {
-  let layerConfigIndex = 0;
+  let layerBatchIndex = 0;
   let editionCount = 1;
   let failedCount = 0;
   let abstractedIndexes = [];
@@ -232,20 +214,21 @@ const startCreating = async () => {
   ) {
     abstractedIndexes.push(i);
   }
+
   if (shuffleLayerConfigurations) {
     abstractedIndexes = shuffle(abstractedIndexes);
   }
-  debugLogs
-    ? console.log("Editions left to create: ", abstractedIndexes)
-    : null;
-  while (layerConfigIndex < layerConfigurations.length) {
+
+  // batchek kb
+  while (layerBatchIndex < layerConfigurations.length) {
     const layers = layersSetup(
-      layerConfigurations[layerConfigIndex].layersOrder
+      layerConfigurations[layerBatchIndex].layersOrder
     );
+    // Exact PNG generation inside a batch
     while (
-      editionCount <= layerConfigurations[layerConfigIndex].growEditionSizeTo
+      editionCount <= layerConfigurations[layerBatchIndex].growEditionSizeTo
     ) {
-      let newDna = createDna(layers);
+      let newDna = createDna(layers, "colors");
       if (isDnaUnique(dnaList, newDna)) {
         let results = constructLayerToDna(newDna, layers);
         let loadedElements = [];
@@ -255,17 +238,10 @@ const startCreating = async () => {
         });
 
         await Promise.all(loadedElements).then((renderObjectArray) => {
-          debugLogs ? console.log("Clearing canvas") : null;
           ctx.clearRect(0, 0, format.width, format.height);
-          if (background.generate) {
-            drawBackground();
-          }
           renderObjectArray.forEach((renderObject) => {
             drawElement(renderObject);
           });
-          debugLogs
-            ? console.log("Editions left to create: ", abstractedIndexes)
-            : null;
           saveImage(abstractedIndexes[0]);
           addMetadata(newDna, abstractedIndexes[0]);
           saveMetaDataSingleFile(abstractedIndexes[0]);
@@ -283,13 +259,13 @@ const startCreating = async () => {
         failedCount++;
         if (failedCount >= uniqueDnaTolerance) {
           console.log(
-            `You need more layers or elements to grow your edition to ${layerConfigurations[layerConfigIndex].growEditionSizeTo} artworks!`
+            `You need more layers or elements to grow your edition to ${layerConfigurations[layerBatchIndex].growEditionSizeTo} artworks!`
           );
           process.exit();
         }
       }
     }
-    layerConfigIndex++;
+    layerBatchIndex++;
   }
   writeMetaData(JSON.stringify(metadataList, null, 2));
 };

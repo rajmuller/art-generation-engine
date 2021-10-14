@@ -21,6 +21,7 @@ let rarityData = [];
 // intialize layers to chart
 layerConfigurations.forEach((config) => {
   let layers = config.layersOrder;
+  console.log({ layers });
 
   layers.forEach((layer) => {
     // get elements for each layer
