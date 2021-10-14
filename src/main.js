@@ -19,7 +19,6 @@ const {
   background,
   uniqueDnaTolerance,
   layerConfigurations,
-  layerSubsetAttributes,
   rarityDelimiter,
   shuffleLayerConfigurations,
   debugLogs,
@@ -108,26 +107,19 @@ const drawBackground = () => {
 };
 
 const addMetadata = (_dna, _edition) => {
-  console.log({ layerSubsetAttributes });
-  const albumNames = layerSubsetAttributes.map(({ key, values }) => ({
-    trait_type: key,
-    values: values[_edition],
-  }));
-  attributesList.unshift(...albumNames);
 
   let dateTime = Date.now();
   let tempMetadata = {
     dna: sha1(_dna.join("")),
     //TODO: name is here
-    name: `Lofasz $${_edition}`,
+    name: `Lofasz round3 #${_edition + 1}`,
     description: description,
     // image: `${baseUri}/${_edition}.png`,
     image: `image.png`,
     edition: _edition,
     date: dateTime,
     ...extraMetadata,
-    attributes: { ...attributesList },
-    compiler: "HashLips Art Engine",
+    attributes: attributesList,
   };
   metadataList.push(tempMetadata);
   attributesList = [];

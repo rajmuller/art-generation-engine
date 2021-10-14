@@ -5,20 +5,12 @@ const isLocal = typeof process.pkg === "undefined";
 const basePath = isLocal ? process.cwd() : path.dirname(process.execPath);
 const { MODE } = require(path.join(basePath, "src/blendMode.js"));
 
-//TODO: change this description
-const description = "Test description";
-// const baseUri = "image.png";
-
-// Set this if you want to add "album" names to the different layerconfigs' attributes
-const layerSubsetAttributes = [
-  { key: "Race", values: ["Vampire", "Zombie"] },
-  { key: "Drug", values: ["Ketamine", "Lsd"] },
-];
+const description = "Price test of 600";
 
 // Rarity is weighted, make a folder summ 1000 then it is percentage based 10 = 1%
 const layerConfigurations = [
   {
-    growEditionSizeTo: 1,
+    growEditionSizeTo: 700,
     layersOrder: [
       { name: "Background" },
       { name: "Eyeball" },
@@ -30,7 +22,7 @@ const layerConfigurations = [
     ],
   },
   {
-    growEditionSizeTo: 2,
+    growEditionSizeTo: 850,
     race: "Zombie",
     layersOrder: [
       { name: "Background" },
@@ -38,6 +30,20 @@ const layerConfigurations = [
       { name: "Eye color" },
       { name: "Iris" },
       { name: "Shine" },
+      { name: "Top lid" },
+    ],
+  },
+  {
+    growEditionSizeTo: 1000,
+    race: "Zombie",
+    layersOrder: [
+      { name: "Background" },
+      { name: "Eyeball" },
+      // { name: "Eye color" },
+      { name: "Iris" },
+      { name: "Shine" },
+      { name: "Bottom lid" },
+      { name: "Top lid" },
     ],
   },
 ];
@@ -58,11 +64,11 @@ const background = {
 };
 
 const extraMetadata = {
-  symbol: "TST",
+  symbol: "TSTP",
   seller_fee_basis_points: 270, // 250 = 2.5% royalty
   collection: {
-    name: "Test Collection Name",
-    family: "Test Collection Family",
+    name: "Price Test Collection",
+    family: "Price Test Collection",
   },
   properties: {
     files: [
@@ -74,7 +80,7 @@ const extraMetadata = {
     category: "image",
     creators: [
       {
-        address: "SOLFLR15asd9d21325bsadythp547912501b", // receive payments here
+        address: "HxJgA9nfJirrWEeghDVSjsgymphBaxwzWJF4AoP7Yqtq", // receive payments here
         share: 100,
       },
     ],
@@ -83,7 +89,7 @@ const extraMetadata = {
 
 const rarityDelimiter = "#";
 
-const uniqueDnaTolerance = 1000;
+const uniqueDnaTolerance = 50000;
 
 const preview = {
   thumbPerRow: 5,
@@ -99,7 +105,7 @@ module.exports = {
   background,
   uniqueDnaTolerance,
   layerConfigurations,
-  layerSubsetAttributes,
+  // layerSubsetAttributes,
   rarityDelimiter,
   preview,
   shuffleLayerConfigurations,
