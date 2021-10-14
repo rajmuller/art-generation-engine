@@ -50,6 +50,7 @@ const getWeightNumber = (_str) => {
 
 const cleanDna = (_str) => {
   var dna = Number(_str.split(":").shift());
+  console.log({ dna });
   return dna;
 };
 
@@ -134,13 +135,14 @@ const drawElement = (_renderObject) => {
   addAttributes(_renderObject);
 };
 
-const constructLayerToDna = (_dna = [], _layersFolders = []) => {
+const constructLayerFromDna = (_dna = [], _layersFolders = []) => {
   console.log({ _dna });
   console.log({ _layersFolders });
   let mappedDnaToLayers = _layersFolders.map((layer, index) => {
-    let selectedElement = layer.elements.find(
-      (e) => e.id == cleanDna(_dna[index])
-    );
+    let selectedElement = layer.elements.find((e) => {
+      console.log("_dna[index]: ", _dna[index]);
+      return e.id == cleanDna(_dna[index]);
+    });
     return {
       name: layer.name,
       blendMode: layer.blendMode,
@@ -148,7 +150,7 @@ const constructLayerToDna = (_dna = [], _layersFolders = []) => {
       selectedElement: selectedElement,
     };
   });
-  console.log({ mappedDnaToLayers });
+  console.log({ selectedElement });
   return mappedDnaToLayers;
 };
 
@@ -178,7 +180,7 @@ const createDna = (_layersFolders) => {
       }
     }
   });
-  randNum.unshift(...colors);
+  randNum.push(...colors);
   // console.log({ randNum });
   // { randNum: [ 'black#500', 'red#500', '1:v2#900', '0:a#100' ] }
   return randNum;
@@ -239,7 +241,7 @@ const startCreating = async () => {
       let newDna = createDna(layersFolders);
       if (isDnaUnique(dnaList, newDna)) {
         // TODO: asd
-        let results = constructLayerToDna(newDna, layersFolders);
+        let results = constructLayerFromDna(newDna, layersFolders);
         let loadedElements = [];
 
         results.forEach((layer) => {
