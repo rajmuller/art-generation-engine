@@ -17,6 +17,7 @@ const {
   // baseUri,
   description,
   uniqueDnaTolerance,
+  colors,
   layerConfigurations,
   rarityDelimiter,
   shuffleLayerConfigurations,
@@ -37,14 +38,14 @@ const buildSetup = () => {
   fs.mkdirSync(path.join(buildDir, "/images"));
 };
 
-const getRarityWeight = (_str) => {
+const getWeightNumber = (_str) => {
   // _str = folder name
-  var nameWithoutWeight = Number(_str.split(rarityDelimiter).pop());
-  console.log({ nameWithoutWeight });
-  if (isNaN(nameWithoutWeight)) {
-    nameWithoutWeight = 0;
+  var weightNumber = Number(_str.split(rarityDelimiter).pop());
+  // console.log({ weightNumber });
+  if (isNaN(weightNumber)) {
+    weightNumber = 0;
   }
-  return nameWithoutWeight;
+  return weightNumber;
 };
 
 const cleanDna = (_str) => {
@@ -68,7 +69,7 @@ const getElements = (path) => {
         name: cleanName(i),
         filename: i,
         path: `${path}${i}`,
-        weight: getRarityWeight(i),
+        weight: getWeightNumber(i),
       };
     });
 };
@@ -133,8 +134,10 @@ const drawElement = (_renderObject) => {
   addAttributes(_renderObject);
 };
 
-const constructLayerToDna = (_dna = [], _layers = []) => {
-  let mappedDnaToLayers = _layers.map((layer, index) => {
+const constructLayerToDna = (_dna = [], _layersFolders = []) => {
+  console.log({ _dna });
+  console.log({ _layersFolders });
+  let mappedDnaToLayers = _layersFolders.map((layer, index) => {
     let selectedElement = layer.elements.find(
       (e) => e.id == cleanDna(_dna[index])
     );
@@ -145,6 +148,7 @@ const constructLayerToDna = (_dna = [], _layers = []) => {
       selectedElement: selectedElement,
     };
   });
+  console.log({ mappedDnaToLayers });
   return mappedDnaToLayers;
 };
 
@@ -153,10 +157,12 @@ const isDnaUnique = (_DnaList = [], _dna = []) => {
   return foundDna == undefined ? true : false;
 };
 
-const createDna = (_layers) => {
+const createDna = (_layersFolders) => {
+  // console.log({ _layersFolders });
   let randNum = [];
-  _layers.forEach((layer) => {
+  _layersFolders.forEach((layer) => {
     var totalWeight = 0;
+    // console.log({ totalWeight });
     layer.elements.forEach((element) => {
       totalWeight += element.weight;
     });
@@ -172,6 +178,9 @@ const createDna = (_layers) => {
       }
     }
   });
+  randNum.unshift(...colors);
+  // console.log({ randNum });
+  // { randNum: [ 'black#500', 'red#500', '1:v2#900', '0:a#100' ] }
   return randNum;
 };
 
@@ -220,16 +229,17 @@ const startCreating = async () => {
 
   // batchek kb
   while (layerBatchIndex < layerConfigurations.length) {
-    const layers = layersSetup(
+    const layersFolders = layersSetup(
       layerConfigurations[layerBatchIndex].layersOrder
     );
     // Exact PNG generation inside a batch
     while (
       editionCount <= layerConfigurations[layerBatchIndex].growEditionSizeTo
     ) {
-      let newDna = createDna(layers, "colors");
+      let newDna = createDna(layersFolders);
       if (isDnaUnique(dnaList, newDna)) {
-        let results = constructLayerToDna(newDna, layers);
+        // TODO: asd
+        let results = constructLayerToDna(newDna, layersFolders);
         let loadedElements = [];
 
         results.forEach((layer) => {
@@ -269,4 +279,4 @@ const startCreating = async () => {
   writeMetaData(JSON.stringify(metadataList, null, 2));
 };
 
-module.exports = { startCreating, buildSetup, getElements };
+module.exports = { startCreating, buildSetup };

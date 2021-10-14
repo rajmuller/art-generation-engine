@@ -7,12 +7,13 @@ const { MODE } = require(path.join(basePath, "src/blendMode.js"));
 
 const description = "Price test of 100 with colors";
 
+const colors = ["black#500", "red#500"];
 const layerConfigurations = [
   {
     growEditionSizeTo: 100,
     layersOrder: [
       { name: "Background" },
-      // { name: "Eyeball" },
+      { name: "Foreground" },
       // { name: "Eye color" },
       // { name: "Iris" },
       // { name: "Shine" },
@@ -95,8 +96,8 @@ module.exports = {
   // baseUri,
   description,
   uniqueDnaTolerance,
+  colors,
   layerConfigurations,
-  // layerSubsetAttributes,
   rarityDelimiter,
   preview,
   shuffleLayerConfigurations,
