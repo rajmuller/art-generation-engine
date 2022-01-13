@@ -3,14 +3,12 @@
 const path = require("path");
 const isLocal = typeof process.pkg === "undefined";
 const basePath = isLocal ? process.cwd() : path.dirname(process.execPath);
-const { MODE } = require(path.join(basePath, "src/blendMode.js"));
 
 const description = "Price test of 100 with colors";
 
-const colors = ["black#500", "red#500"];
 const layerConfigurations = [
   {
-    growEditionSizeTo: 10,
+    growEditionSizeTo: 2,
     layersOrder: [
       { name: "Colors" },
       { name: "Background" },
@@ -97,7 +95,6 @@ module.exports = {
   // baseUri,
   description,
   uniqueDnaTolerance,
-  colors,
   layerConfigurations,
   rarityDelimiter,
   preview,

@@ -17,7 +17,6 @@ const {
   // baseUri,
   description,
   uniqueDnaTolerance,
-  colors,
   layerConfigurations,
   rarityDelimiter,
   shuffleLayerConfigurations,
@@ -123,7 +122,7 @@ const addMetadata = (_dna, _edition) => {
 };
 
 const addAttributes = (_element) => {
-  console.log({ _element });
+  // console.log({ _element });
   let selectedElement = _element.layer.selectedElement;
   attributesList.push({
     trait_type: _element.layer.name,
@@ -152,6 +151,7 @@ const constructLayerToDna = (_dna = [], _layersFolders = []) => {
     let selectedElement = layer.elements.find((e) => {
       return e.id == cleanDna(_dna[index]);
     });
+    console.log({selectedElement});
     return {
       name: layer.name,
       blendMode: layer.blendMode,
@@ -246,9 +246,12 @@ const startCreating = async () => {
       editionCount <= layerConfigurations[layerBatchIndex].growEditionSizeTo
     ) {
       let newDna = createDna(layersFolders);
+      // TODO: maybe dnaUnique needs to be updated
       if (isDnaUnique(dnaList, newDna)) {
         let results = constructLayerToDna(newDna, layersFolders);
+        console.log({ results });
         selectedColor = results[0].selectedElement.name;
+        console.log({ selectedColor });
         let loadedElements = [];
         results.forEach((layer) => {
           if (layer.name !== "Colors") {
