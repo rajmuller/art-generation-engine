@@ -8,11 +8,13 @@ const description = "Price test of 100 with colors";
 
 const layerConfigurations = [
   {
-    growEditionSizeTo: 2,
+    growEditionSizeTo: 1,
     layersOrder: [
-      { name: "Colors" },
+      { name: "Rarity" },
       { name: "Background" },
-      { name: "Foreground" },
+      { name: "Shoulder" },
+      { name: "Chest" },
+      { name: "Weapon" },
       // { name: "Eye color" },
       // { name: "Iris" },
       // { name: "Shine" },

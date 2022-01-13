@@ -75,7 +75,15 @@ const getElements = (path) => {
 };
 
 const layersSetup = (layersOrder) => {
+  // layersOrder: [
+  //   { name: 'Rarity' },
+  //   { name: 'Background' },
+  //   { name: 'Shoulder' },
+  //   { name: 'Chest' },
+  //   { name: 'Weapon' }
+  // ]
   const layers = layersOrder.map((layerObj, index) => {
+    console.log(getElements(`${layersDir}/${layerObj.name}/`));
     return {
       id: index,
       name: layerObj.name,
@@ -86,13 +94,6 @@ const layersSetup = (layersOrder) => {
     };
   });
   return layers;
-};
-
-const saveImage = (_editionCount) => {
-  fs.writeFileSync(
-    `${buildDir}/images/${_editionCount}.png`,
-    canvas.toBuffer("image/png")
-  );
 };
 
 const addMetadata = (_dna, _edition) => {
@@ -151,7 +152,7 @@ const constructLayerToDna = (_dna = [], _layersFolders = []) => {
     let selectedElement = layer.elements.find((e) => {
       return e.id == cleanDna(_dna[index]);
     });
-    console.log({selectedElement});
+    // console.log({selectedElement});
     return {
       name: layer.name,
       blendMode: layer.blendMode,
