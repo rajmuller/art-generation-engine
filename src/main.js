@@ -40,8 +40,8 @@ const buildSetup = () => {
 
 const getWeightNumber = (_str) => {
   // _str = folder name
-  var weightNumber = Number(_str.split(rarityDelimiter).pop());
-  // console.log({ weightNumber });
+  var weightNumberMaybeWithExtension = _str.split(rarityDelimiter).pop();
+  var weightNumber = Number(weightNumberMaybeWithExtension.replace(".png", ""));
   if (isNaN(weightNumber)) {
     weightNumber = 0;
   }
@@ -83,7 +83,6 @@ const layersSetup = (layersOrder) => {
   //   { name: 'Weapon' }
   // ]
   const layers = layersOrder.map((layerObj, index) => {
-    console.log(getElements(`${layersDir}/${layerObj.name}/`));
     return {
       id: index,
       name: layerObj.name,
@@ -168,28 +167,89 @@ const isDnaUnique = (_DnaList = [], _dna = []) => {
   return foundDna == undefined ? true : false;
 };
 
+const isLayerIndependent = (layer) => {
+  if (
+    ["Rarity", "Weapon", "Arm", "Eyes", "Beak", "Background"].includes(
+      layer.name
+    )
+  ) {
+    return true;
+  }
+  return false;
+};
+
+const getColorsByRarity = (rarity) => {
+  switch (rarity) {
+    case "Common":
+      return ["Grey", "Green"];
+
+    case "Rare":
+      return ["Blue", "Red"];
+
+    case "Epic":
+      return ["Purple"];
+
+    case "Legendary":
+      return ["Purple"];
+  }
+};
+
+const getElementsByRarity = (elements, rarity) => {
+  return elements.filter((element) =>
+    getColorsByRarity(rarity).includes(element.name)
+  );
+};
+
 const createDna = (_layersFolders) => {
-  // console.log({ _layersFolders });
   let randNum = [];
+  let rarityColor;
   _layersFolders.forEach((layer) => {
     var totalWeight = 0;
-    // console.log({ totalWeight });
-    layer.elements.forEach((element) => {
-      totalWeight += element.weight;
-    });
-    // number between 0 - totalWeight
-    let random = Math.floor(Math.random() * totalWeight);
-    for (var i = 0; i < layer.elements.length; i++) {
-      // subtract the current weight from the random weight until we reach a sub zero value.
-      random -= layer.elements[i].weight;
-      if (random < 0) {
-        return randNum.push(
-          `${layer.elements[i].id}:${layer.elements[i].filename}`
-        );
+    if (isLayerIndependent(layer)) {
+      // console.log({ totalWeight });
+      layer.elements.forEach((element) => {
+        // console.log({ element });
+        // {
+        //   id: 0,
+        //   name: 'Common',
+        //   filename: 'Common#50',
+        //   path: '/home/rajfta/web3/hashlips_art_engine/layers/Rarity/Common#50',
+        //   weight: 50
+        // }
+        totalWeight += element.weight;
+      });
+      // number between 0 - totalWeight
+      let random = Math.floor(Math.random() * totalWeight);
+      for (var i = 0; i < layer.elements.length; i++) {
+        // subtract the current weight from the random weight until we reach a sub zero value.
+        random -= layer.elements[i].weight;
+        if (random < 0) {
+          randNum.push(`${layer.elements[i].id}:${layer.elements[i].filename}`);
+          if (layer.name === "Rarity") {
+            rarityColor = layer.elements[i].name;
+          }
+          break;
+        }
+      }
+    } else {
+      const relevantElements = getElementsByRarity(layer.elements, rarityColor);
+      relevantElements.forEach((element) => {
+        totalWeight += element.weight;
+      });
+      let random = Math.floor(Math.random() * totalWeight);
+      for (var i = 0; i < relevantElements.length; i++) {
+        // subtract the current weight from the random weight until we reach a sub zero value.
+        random -= relevantElements[i].weight;
+        if (random < 0) {
+          randNum.push(
+            `${relevantElements[i].id}:${relevantElements[i].filename}`
+          );
+          break;
+        }
       }
     }
   });
-  // console.log({ randNum });
+  console.log({ randNum });
   // { randNum: [ '12:Red-Black-Blue#10', '1:v2#900', '1:b#450' ] }
   return randNum;
 };
@@ -247,12 +307,13 @@ const startCreating = async () => {
       editionCount <= layerConfigurations[layerBatchIndex].growEditionSizeTo
     ) {
       let newDna = createDna(layersFolders);
+      // console.log({ newDna });
       // TODO: maybe dnaUnique needs to be updated
       if (isDnaUnique(dnaList, newDna)) {
         let results = constructLayerToDna(newDna, layersFolders);
-        console.log({ results });
+        // console.log({ results });
         selectedColor = results[0].selectedElement.name;
-        console.log({ selectedColor });
+        // console.log({ selectedColor });
         let loadedElements = [];
         results.forEach((layer) => {
           if (layer.name !== "Colors") {
