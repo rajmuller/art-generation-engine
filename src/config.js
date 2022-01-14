@@ -4,7 +4,7 @@ const path = require("path");
 const isLocal = typeof process.pkg === "undefined";
 const basePath = isLocal ? process.cwd() : path.dirname(process.execPath);
 
-const description = "Price test of 100 with colors";
+const description = "Deus ex Sol deities";
 
 const layerConfigurations = [
   {
@@ -59,10 +59,11 @@ const format = {
 
 const extraMetadata = {
   symbol: "TSTP",
+  //TODO: royalty here
   seller_fee_basis_points: 270, // 250 = 2.5% royalty
   collection: {
-    name: "Price Test Collection",
-    family: "Price Test Collection",
+    name: "Deus ex Sol",
+    family: "Deus ex Sol",
   },
   properties: {
     files: [

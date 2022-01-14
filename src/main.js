@@ -95,12 +95,35 @@ const layersSetup = (layersOrder) => {
   return layers;
 };
 
+const saveImage = (_editionCount) => {
+  fs.writeFileSync(
+    `${buildDir}/images/${_editionCount}.png`,
+    canvas.toBuffer("image/png")
+  );
+};
+
+const getValue = (selectedColor) => {
+  switch (selectedColor) {
+    case "Common":
+      return "Mix";
+
+    case "Rare":
+      return "Natural";
+
+    case "Epic":
+      return "Hero";
+
+    case "Legendary":
+      return "God";
+  }
+};
+
 const addMetadata = (_dna, _edition) => {
   let dateTime = Date.now();
   let tempMetadata = {
     dna: sha1(_dna.join("")),
     //TODO: name is here
-    name: `Lofasz round3 #${_edition + 1}`,
+    name: `Deus ex Sol #${_edition + 1}`,
     description: description,
     // image: `${baseUri}/${_edition}.png`,
     image: `image.png`,
@@ -109,8 +132,8 @@ const addMetadata = (_dna, _edition) => {
     ...extraMetadata,
     attributes: [
       {
-        trait_type: "Color",
-        value: selectedColor,
+        trait_type: "Feather",
+        value: getValue(selectedColor),
       },
       ...attributesList,
     ],
@@ -132,9 +155,7 @@ const addAttributes = (_element) => {
 
 const loadLayerImg = async (_layer) => {
   return new Promise(async (resolve) => {
-    const image = await loadImage(
-      `${_layer.selectedElement.path}/${selectedColor}.png`
-    );
+    const image = await loadImage(_layer.selectedElement.path);
     resolve({ layer: _layer, loadedImage: image });
   });
 };
@@ -249,7 +270,6 @@ const createDna = (_layersFolders) => {
       }
     }
   });
-  console.log({ randNum });
   // { randNum: [ '12:Red-Black-Blue#10', '1:v2#900', '1:b#450' ] }
   return randNum;
 };
@@ -307,8 +327,6 @@ const startCreating = async () => {
       editionCount <= layerConfigurations[layerBatchIndex].growEditionSizeTo
     ) {
       let newDna = createDna(layersFolders);
-      // console.log({ newDna });
-      // TODO: maybe dnaUnique needs to be updated
       if (isDnaUnique(dnaList, newDna)) {
         let results = constructLayerToDna(newDna, layersFolders);
         // console.log({ results });
@@ -316,7 +334,7 @@ const startCreating = async () => {
         // console.log({ selectedColor });
         let loadedElements = [];
         results.forEach((layer) => {
-          if (layer.name !== "Colors") {
+          if (layer.name !== "Rarity") {
             loadedElements.push(loadLayerImg(layer));
           }
         });
