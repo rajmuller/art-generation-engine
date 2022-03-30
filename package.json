@@ -1,7 +1,7 @@
 {
-  "name": "hashlips_art_engine",
+  "name": "nft_art_engine",
   "version": "1.0.5",
-  "description": "HashLips Art Engine is a tool used to create multiple different instances of artworks based on provided layers.",
+  "description": "Nft Art Engine is a tool used to create multiple different instances of artworks based on provided layers.",
   "main": "index.js",
   "bin": "index.js",
   "pkg": {
@@ -16,7 +16,7 @@
     "updateUri": "node utils/createPreviewCollage.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Daniel Eugene Botha (HashLips)",
+  "author": "Daniel Eugene Botha (HashLips) & Rein",
   "license": "MIT",
   "dependencies": {
     "canvas": "^2.8.0",

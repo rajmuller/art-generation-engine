@@ -14,7 +14,7 @@ const layersDir = path.join(basePath, "/layers");
 console.log(path.join(basePath, "/src/config.js"));
 const {
   format,
-  // baseUri,
+  baseUri,
   description,
   uniqueDnaTolerance,
   layerConfigurations,
@@ -123,34 +123,35 @@ const addMetadata = (_dna, _edition) => {
   let tempMetadata = {
     dna: sha1(_dna.join("")),
     //TODO: name is here
-    name: `Deus ex Sol #${_edition + 1}`,
+    name: `Deity #${_edition}`,
     description: description,
     // image: `${baseUri}/${_edition}.png`,
-    image: `image.png`,
+    image: `${baseUri}/${_edition}.png`,
     edition: _edition,
     date: dateTime,
     ...extraMetadata,
     attributes: [
       {
-        trait_type: "Feather",
-        value: getValue(selectedColor),
+        trait_type: "Dye",
+        value: selectedColor,
       },
       ...attributesList,
     ],
   };
-  // single metadata file
+  // single metadata file{layersDir}/${layerObj.name}/`),
   metadataList.push(tempMetadata);
   selectedColor = "";
   attributesList = [];
 };
 
 const addAttributes = (_element) => {
-  // console.log({ _element });
   let selectedElement = _element.layer.selectedElement;
-  attributesList.push({
-    trait_type: _element.layer.name,
-    value: selectedElement.name,
-  });
+  if (selectedElement.name !== "body") {
+    attributesList.push({
+      trait_type: _element.layer.name,
+      value: selectedElement.name,
+    });
+  }
 };
 
 const loadLayerImg = async (_layer) => {
@@ -190,7 +191,7 @@ const isDnaUnique = (_DnaList = [], _dna = []) => {
 
 const isLayerIndependent = (layer) => {
   if (
-    ["Rarity", "Weapon", "Arm", "Eyes", "Beak", "Background"].includes(
+    ["Dye", "Body", "Weapon", "Eye", "Arm", "Beak", "Background"].includes(
       layer.name
     )
   ) {
@@ -201,42 +202,64 @@ const isLayerIndependent = (layer) => {
 
 const getColorsByRarity = (rarity) => {
   switch (rarity) {
-    case "Common":
-      return ["Grey", "Green"];
+    case "Mix":
+      return [
+        "blue",
+        "cyan",
+        "green",
+        "orange",
+        "pink",
+        "purple",
+        "red",
+        "yellow",
+      ];
 
-    case "Rare":
-      return ["Blue", "Red"];
+    case "Blue":
+      return ["blue"];
 
-    case "Epic":
-      return ["Purple"];
+    case "Cyan":
+      return ["cyan"];
 
-    case "Legendary":
-      return ["Purple"];
+    case "Green":
+      return ["green"];
+
+    case "Orange":
+      return ["orange"];
+
+    case "Pink":
+      return ["pink"];
+
+    case "Purple":
+      return ["purple"];
+
+    case "Red":
+      return ["red"];
+
+    case "Yellow":
+      return ["yellow"];
   }
 };
 
 const getElementsByRarity = (elements, rarity) => {
-  return elements.filter((element) =>
-    getColorsByRarity(rarity).includes(element.name)
-  );
+  const relevants = [];
+  elements.forEach((element) => {
+    getColorsByRarity(rarity).forEach((dye) => {
+      if (element.name.startsWith(dye)) {
+        relevants.push(element);
+      }
+    });
+  });
+  return relevants;
 };
 
 const createDna = (_layersFolders) => {
   let randNum = [];
-  let rarityColor;
+  let dye;
   _layersFolders.forEach((layer) => {
     var totalWeight = 0;
     if (isLayerIndependent(layer)) {
       // console.log({ totalWeight });
       layer.elements.forEach((element) => {
-        // console.log({ element });
-        // {
-        //   id: 0,
-        //   name: 'Common',
-        //   filename: 'Common#50',
-        //   path: '/home/rajfta/web3/hashlips_art_engine/layers/Rarity/Common#50',
-        //   weight: 50
-        // }
         totalWeight += element.weight;
       });
       // number between 0 - totalWeight
@@ -246,14 +269,15 @@ const createDna = (_layersFolders) => {
         random -= layer.elements[i].weight;
         if (random < 0) {
           randNum.push(`${layer.elements[i].id}:${layer.elements[i].filename}`);
-          if (layer.name === "Rarity") {
-            rarityColor = layer.elements[i].name;
+          if (layer.name === "Dye") {
+            dye = layer.elements[i].name;
           }
           break;
         }
       }
     } else {
-      const relevantElements = getElementsByRarity(layer.elements, rarityColor);
+      const relevantElements = getElementsByRarity(layer.elements, dye);
+      console.log({ dye });
       relevantElements.forEach((element) => {
         totalWeight += element.weight;
       });
@@ -334,7 +358,7 @@ const startCreating = async () => {
         // console.log({ selectedColor });
         let loadedElements = [];
         results.forEach((layer) => {
-          if (layer.name !== "Rarity") {
+          if (layer.name !== "Dye") {
             loadedElements.push(loadLayerImg(layer));
           }
         });

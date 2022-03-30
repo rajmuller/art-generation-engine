@@ -4,22 +4,25 @@ const path = require("path");
 const isLocal = typeof process.pkg === "undefined";
 const basePath = isLocal ? process.cwd() : path.dirname(process.execPath);
 
-const description = "Deus ex Sol deities";
+const description = "Deus ex Olygon deities";
+const baseUri = "asdasd";
 
 const layerConfigurations = [
   {
     growEditionSizeTo: 1,
     layersOrder: [
-      { name: "Rarity" },
+      { name: "Dye" },
       { name: "Background" },
-      { name: "Shoulder" },
+      { name: "Body" },
+      { name: "Cape" },
+      { name: "Arm" },
       { name: "Chest" },
+      { name: "Head" },
+      { name: "Face" },
+      { name: "Shoulder" },
+      { name: "Eye" },
+      { name: "Beak" },
       { name: "Weapon" },
-      // { name: "Eye color" },
-      // { name: "Iris" },
-      // { name: "Shine" },
-      // { name: "Bottom lid" },
-      // { name: "Top lid" },
     ],
   },
   // {
@@ -53,17 +56,15 @@ const layerConfigurations = [
 const shuffleLayerConfigurations = false;
 
 const format = {
-  width: 512,
-  height: 512,
+  width: 500,
+  height: 500,
 };
 
 const extraMetadata = {
-  symbol: "TSTP",
-  //TODO: royalty here
-  seller_fee_basis_points: 270, // 250 = 2.5% royalty
+  symbol: "DEP",
   collection: {
-    name: "Deus ex Sol",
-    family: "Deus ex Sol",
+    name: "Deus ex Olygon",
+    family: "Deus ex Olygon",
   },
   properties: {
     files: [
@@ -73,12 +74,6 @@ const extraMetadata = {
       },
     ],
     category: "image",
-    creators: [
-      {
-        address: "HxJgA9nfJirrWEeghDVSjsgymphBaxwzWJF4AoP7Yqtq", // receive payments here
-        share: 100,
-      },
-    ],
   },
 };
 
@@ -95,7 +90,7 @@ const preview = {
 
 module.exports = {
   format,
-  // baseUri,
+  baseUri,
   description,
   uniqueDnaTolerance,
   layerConfigurations,
