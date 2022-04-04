@@ -36,6 +36,7 @@ const buildSetup = () => {
   fs.mkdirSync(buildDir);
   fs.mkdirSync(path.join(buildDir, "/json"));
   fs.mkdirSync(path.join(buildDir, "/images"));
+  fs.mkdirSync(path.join(buildDir, "/godStaffMadafakers"));
 };
 
 const getWeightNumber = (_str) => {
@@ -98,6 +99,13 @@ const layersSetup = (layersOrder) => {
 const saveImage = (_editionCount) => {
   fs.writeFileSync(
     `${buildDir}/images/${_editionCount}.png`,
+    canvas.toBuffer("image/png")
+  );
+};
+
+const saveGodStaffImage = (_editionCount) => {
+  fs.writeFileSync(
+    `${buildDir}/godStaffMadafakers/${_editionCount}.png`,
     canvas.toBuffer("image/png")
   );
 };
@@ -242,12 +250,18 @@ const getColorsByRarity = (rarity) => {
 
 const getElementsByRarity = (elements, rarity) => {
   const relevants = [];
+  const relevantColors = getColorsByRarity(rarity);
+
   elements.forEach((element) => {
-    getColorsByRarity(rarity).forEach((dye) => {
-      if (element.name.startsWith(dye)) {
-        relevants.push(element);
-      }
-    });
+    // console.log("name:", element.name.slice(0, -2));
+    if (relevantColors.includes(element.name.slice(0, -2))) {
+      relevants.push(element);
+    }
+    // getColorsByRarity(rarity).forEach((dye) => {
+    //   if (element.name.startsWith(dye)) {
+    //     relevants.push(element);
+    //   }
+    // });
   });
   return relevants;
 };
@@ -277,7 +291,6 @@ const createDna = (_layersFolders) => {
       }
     } else {
       const relevantElements = getElementsByRarity(layer.elements, dye);
-      console.log({ dye });
       relevantElements.forEach((element) => {
         totalWeight += element.weight;
       });
@@ -369,6 +382,9 @@ const startCreating = async () => {
             drawElement(renderObject);
           });
           saveImage(abstractedIndexes[0]);
+          if (newDna.includes("1:God Staff#2.png")) {
+            saveGodStaffImage(abstractedIndexes[0]);
+          }
           console.log({ newDna });
           addMetadata(newDna, abstractedIndexes[0]);
           saveMetaDataSingleFile(abstractedIndexes[0]);

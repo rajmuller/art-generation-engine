@@ -4,25 +4,25 @@ const path = require("path");
 const isLocal = typeof process.pkg === "undefined";
 const basePath = isLocal ? process.cwd() : path.dirname(process.execPath);
 
-const description = "Deus ex Olygon deities";
+const description = "Deus ex Sol deities";
 const baseUri = "asdasd";
 
 const layerConfigurations = [
   {
-    growEditionSizeTo: 1,
+    growEditionSizeTo: 10,
     layersOrder: [
       { name: "Dye" },
       { name: "Background" },
-      { name: "Body" },
       { name: "Cape" },
+      { name: "Body" },
       { name: "Arm" },
-      { name: "Chest" },
-      { name: "Head" },
-      { name: "Face" },
-      { name: "Shoulder" },
       { name: "Eye" },
-      { name: "Beak" },
+      { name: "Head" },
+      { name: "Shoulder" },
+      { name: "Chest" },
       { name: "Weapon" },
+      { name: "Beak" },
+      { name: "Face" },
     ],
   },
   // {
@@ -63,8 +63,8 @@ const format = {
 const extraMetadata = {
   symbol: "DEP",
   collection: {
-    name: "Deus ex Olygon",
-    family: "Deus ex Olygon",
+    name: "Deus ex Sol",
+    family: "Deus ex Sol",
   },
   properties: {
     files: [
